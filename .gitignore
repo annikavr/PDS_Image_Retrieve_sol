@@ -1,0 +1,13 @@
+# Ignore all files and directories
+*
+
+# But not these files...
+!.gitignore
+!README.md
+!get_imgs.py
+
+# Explicitly do not ignore directories, to be able to include files within them
+!*/
+
+# However, ignore all CSV files within those directories
+*.csv
