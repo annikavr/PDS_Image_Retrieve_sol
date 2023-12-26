@@ -37,7 +37,7 @@ The script will then:
 
 - Parse the CSV file to find the specified image IDs.
 - Display a progress bar with the download status and counts of successful and failed downloads.
-- Download the images to a newly created folder named according to the specified image IDs in the format `xxxxx_xxxxx`.
+- Download the images to a newly created folder named according to the specified image IDs in the format `xxxxx_xxxxx_...`.
 
 If any of the web pages do not contain a "Download PNG" button, the script will log this as 'not found' and proceed with the next image.
 

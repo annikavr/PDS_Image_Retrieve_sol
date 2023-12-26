@@ -25,6 +25,10 @@ def find_items_with_ids(file_path, ids):
 
     return found_ids
 
+# Ensure that there is at least one ID provided
+if not ids or len(ids) == 0:
+    raise ValueError("You must include at least one ID in the 'ids' list.")
+
 fol_name = "_".join(id_[4:] for id_ in ids)
 
 def download_images(image_ids, base_url="https://mastcamz.asu.edu/galleries/", folder_name=fol_name):
