@@ -5,6 +5,7 @@
 !.gitignore
 !README.md
 !get_imgs.py
+!main.py
 
 # Explicitly do not ignore directories, to be able to include files within them
 !*/
