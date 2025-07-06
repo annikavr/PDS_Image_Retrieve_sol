@@ -4,6 +4,44 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
+import csv
+
+def find_items_with_sols(file_path, sols):
+    found_items = []
+
+    with open(file_path, mode='r', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            if len(row) < 2:
+                continue
+            # Enforce colored image
+            if 'eby' not in row[1]:
+                continue
+            filename = row[1]
+            # Extract the SOL number — it's the second token in the filename
+            parts = filename.split('_')
+            if len(parts) < 2:
+                continue
+            try:
+                sol = int(parts[1])
+            except ValueError:
+                continue
+            if sol not in sols:
+                continue
+            # Extract the image path portion
+            start_index = filename.find("browse:") + len("browse:")
+            end_index = filename.find("::", start_index)
+            if start_index == -1 or end_index == -1:
+                continue
+            end_num = '0' + str(filename[end_index + len('::'):])[0]
+            extracted_portion = filename[start_index:end_index]
+            extracted_portion = extracted_portion.upper()[:-4] + end_num + '.png'
+
+            found_items.append(extracted_portion)
+
+    print(f'\n****** Found {len(found_items)} images for the specified sols ******\n')
+    return found_items #still have to check if this works to confirm
+
 def find_items_with_ids(file_path, ids):
     found_ids = []
 
