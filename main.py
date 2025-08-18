@@ -1,4 +1,4 @@
-from get_imgs import find_items_with_ids, download_images
+from get_imgs_sol import find_items_with_ids, download_images
 
 ######### ENTER DESIRED ZCAM IMAGE IDS HERE ###########
 ids = ["zcam07114", "zcam07115"]
