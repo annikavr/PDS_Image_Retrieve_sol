@@ -4,29 +4,33 @@ import requests
 from tqdm import tqdm
 
 def parse_filename(filename):
-    """Extract sol, time, product type, thumbnail flag, and sequence ID."""
+    """
+    Extract sol, time, thumbnail flag, sequence ID, and filename.
+    Works for non-RAD images.
+    """
     parts = filename.split("_")
     if len(parts) < 6:
         return None
 
     sol = parts[1]
     time = parts[2]
-    product_type = parts[3][-3:]  # e.g., RAD
-    thumb_flag = parts[4][0]      # N (non-thumbnail) or T (thumbnail)
+    thumb_flag = parts[4][0]      # N = non-thumbnail, T = thumbnail
     seq_id = [p for p in parts if p.startswith("ZCAM")]
     seq_id = seq_id[0] if seq_id else None
 
     return {
         "sol": sol,
         "time": time,
-        "product_type": product_type,
         "thumb_flag": thumb_flag,
         "seq_id": seq_id,
         "filename": filename
     }
 
 def find_items_with_ids(file_path, ids, max_sol=None):
-    """Filter RAD+N images by sequence IDs (and optionally max_sol)."""
+    """
+    Find all non-thumbnail images matching given sequence IDs, optionally filtered by max_sol.
+    Returns a list of metadata dictionaries.
+    """
     found_items = []
 
     with open(file_path, mode="r", encoding="utf-8") as file:
@@ -40,13 +44,11 @@ def find_items_with_ids(file_path, ids, max_sol=None):
             if not meta:
                 continue
 
-            # Only accept images that match the given IDs
+            # Match sequence IDs
             if not any(id_.upper() in filename for id_ in ids):
                 continue
 
-            # Apply filters
-            if meta["product_type"] != "RAD":
-                continue
+            # Skip thumbnails
             if meta["thumb_flag"] != "N":
                 continue
             if not meta["seq_id"]:
@@ -56,11 +58,13 @@ def find_items_with_ids(file_path, ids, max_sol=None):
 
             found_items.append(meta)
 
-    print(f"\n****** Found {len(found_items)} RAD+N images with the given IDs ******\n")
+    print(f"\n****** Found {len(found_items)} N images with the given IDs ******\n")
     return found_items
 
 def download_images(image_entries, in_ids, base_url="https://planetarydata.jpl.nasa.gov/img/data/mars2020/mars2020_mastcamz_ops_raw/browse/sol/"):
-    """Download into /solXXXXX/sequence_id/ structure."""
+    """
+    Download images into /solXXXXX/sequence_id/ folders.
+    """
     success_count, fail_count = 0, 0
 
     with tqdm(total=len(image_entries), desc="Downloading", unit="file", ncols=100) as pbar:
